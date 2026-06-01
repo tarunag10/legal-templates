@@ -1,9 +1,12 @@
 import {
+  buildMarkdownExport,
   buildTemplateExportMetadata,
   filterTemplates,
   getTemplate,
   getTemplateCategories,
-  renderTemplate
+  normalizeFavouriteTemplates,
+  renderTemplate,
+  sortTemplatesWithFavourites
 } from './templates.js';
 
 const form = document.querySelector('form');
@@ -15,7 +18,23 @@ const templateSummary = document.querySelector('#template-summary');
 const status = document.querySelector('#status');
 const copyButton = document.querySelector('#copyTemplate');
 const downloadButton = document.querySelector('#downloadTemplate');
+const downloadMarkdownButton = document.querySelector('#downloadMarkdown');
+const favouriteButton = document.querySelector('#favouriteTemplate');
+const showFavourites = document.querySelector('#showFavourites');
 const catalogueCards = document.querySelector('#catalogue-cards');
+const favouritesKey = 'open-access-uk:legal-templates:favourites';
+
+function getFavourites() {
+  try {
+    return normalizeFavouriteTemplates(JSON.parse(localStorage.getItem(favouritesKey) || '[]'));
+  } catch {
+    return [];
+  }
+}
+
+function setFavourites(ids) {
+  localStorage.setItem(favouritesKey, JSON.stringify(normalizeFavouriteTemplates(ids)));
+}
 
 function option(value, label) {
   const element = document.createElement('option');
@@ -32,9 +51,13 @@ function populateCategories() {
 }
 
 function populateTemplates(selectedId = templateSelect.value) {
-  const templates = filterTemplates({ category: categorySelect.value, query: searchInput.value });
+  const favourites = getFavourites();
+  const filtered = filterTemplates({ category: categorySelect.value, query: searchInput.value });
+  const templates = showFavourites.checked
+    ? sortTemplatesWithFavourites(filtered, favourites)
+    : filtered;
   templateSelect.replaceChildren(
-    ...templates.map((template) => option(template.id, template.title))
+    ...templates.map((template) => option(template.id, favourites.includes(template.id) ? `★ ${template.title}` : template.title))
   );
   if (templates.some((template) => template.id === selectedId)) {
     templateSelect.value = selectedId;
@@ -42,10 +65,10 @@ function populateTemplates(selectedId = templateSelect.value) {
   if (!templateSelect.value && templates[0]) {
     templateSelect.value = templates[0].id;
   }
-  renderCatalogue(templates);
+  renderCatalogue(templates, favourites);
 }
 
-function renderCatalogue(templates) {
+function renderCatalogue(templates, favourites = []) {
   catalogueCards.replaceChildren(
     ...templates.map((template) => {
       const card = document.createElement('article');
@@ -54,7 +77,7 @@ function renderCatalogue(templates) {
       heading.textContent = template.title;
       const category = document.createElement('p');
       category.className = 'tag';
-      category.textContent = template.category;
+      category.textContent = favourites.includes(template.id) ? `★ ${template.category}` : template.category;
       const summary = document.createElement('p');
       summary.textContent = template.summary;
       card.append(heading, category, summary);
@@ -101,6 +124,32 @@ function downloadTemplate() {
   status.textContent = `Downloaded ${metadata.filename}. Nothing was sent to a server.`;
 }
 
+function downloadMarkdown() {
+  const data = values();
+  const metadata = buildTemplateExportMetadata(data.template, data);
+  const filename = metadata.filename.replace(/\.txt$/, '.md');
+  const blob = new Blob([buildMarkdownExport(data.template, data)], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+  status.textContent = `Downloaded ${filename}. Nothing was sent to a server.`;
+}
+
+function toggleFavourite() {
+  const data = values();
+  const favourites = getFavourites();
+  const next = favourites.includes(data.template)
+    ? favourites.filter((id) => id !== data.template)
+    : [...favourites, data.template];
+  setFavourites(next);
+  populateTemplates(data.template);
+  update();
+  status.textContent = next.includes(data.template) ? 'Template saved as a local favourite.' : 'Template removed from local favourites.';
+}
+
 populateCategories();
 populateTemplates('refund-request');
 templateSelect.value = 'refund-request';
@@ -116,4 +165,10 @@ form.addEventListener('submit', (event) => {
 });
 copyButton.addEventListener('click', copyTemplate);
 downloadButton.addEventListener('click', downloadTemplate);
+downloadMarkdownButton.addEventListener('click', downloadMarkdown);
+favouriteButton.addEventListener('click', toggleFavourite);
+showFavourites.addEventListener('change', () => {
+  populateTemplates();
+  update();
+});
 update();

@@ -38,6 +38,7 @@
         <label for="template">Template</label>
         <select id="template" name="template"></select>
         <p id="template-summary" class="summary" aria-live="polite"></p>
+        <label class="checkbox-row"><input id="showFavourites" type="checkbox"> Show favourites first</label>
 
         <label for="organisation">Trader, landlord, bank, council, or provider</label>
         <input id="organisation" name="organisation" value="Example Shop">
@@ -69,6 +70,8 @@
         <div class="actions" aria-label="Template actions">
           <button id="copyTemplate" type="button">Copy</button>
           <button id="downloadTemplate" type="button" class="secondary">Download .txt</button>
+          <button id="downloadMarkdown" type="button" class="secondary">Download .md</button>
+          <button id="favouriteTemplate" type="button" class="secondary">Save favourite</button>
         </div>
         <p id="status" role="status" aria-live="polite"></p>
       </form>

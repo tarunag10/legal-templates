@@ -256,3 +256,38 @@ export function buildTemplateExportMetadata(id, facts = {}) {
     mimeType: 'text/plain;charset=utf-8'
   };
 }
+
+export function normalizeFavouriteTemplates(value = []) {
+  const seen = new Set();
+  const ids = Array.isArray(value) ? value : [];
+  return ids.filter((id) => {
+    if (!templateCatalogue[id] || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
+
+export function sortTemplatesWithFavourites(templates, favouriteIds = []) {
+  const favourites = new Set(normalizeFavouriteTemplates(favouriteIds));
+  return [...templates].sort((a, b) => {
+    const aFav = favourites.has(a.id);
+    const bFav = favourites.has(b.id);
+    if (aFav !== bFav) return aFav ? -1 : 1;
+    return a.title.localeCompare(b.title);
+  });
+}
+
+export function buildMarkdownExport(id, facts = {}) {
+  const template = getTemplate(id);
+  const rendered = renderTemplate(id, facts);
+  return `# ${template.title}
+
+${template.summary}
+
+Category: ${template.category}
+
+\`\`\`text
+${rendered}
+\`\`\`
+`;
+}

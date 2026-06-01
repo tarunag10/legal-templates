@@ -17,7 +17,7 @@ Open `index.html` in a browser. This repository is intentionally no-backend and 
 - Airline assistance complaint: accessibility and special-assistance complaint wording.
 - Council escalation: formal complaint escalation and Local Government and Social Care Ombudsman prompt.
 
-The browser UI now includes category filtering, text search across template metadata, dynamic catalogue cards, local copy support, and `.txt` downloads with safe generated filenames. The eight starter templates remain the baseline catalogue.
+The browser UI now includes category filtering, text search across template metadata, dynamic catalogue cards, local copy support, and `.txt` downloads with safe generated filenames. Slice 2 adds browser-local favourite templates, favourites-first ordering, and Markdown downloads for templates. The eight starter templates remain the baseline catalogue.
 
 ## Source checks
 

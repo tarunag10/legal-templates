@@ -1,9 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  buildMarkdownExport,
   buildTemplateExportMetadata,
   filterTemplates,
   getTemplateCategories,
+  normalizeFavouriteTemplates,
+  sortTemplatesWithFavourites,
   renderTemplate,
   templateCatalogue
 } from '../src/templates.js';
@@ -85,4 +88,32 @@ test('builds template export metadata with a safe filename', () => {
   assert.equal(metadata.mimeType, 'text/plain;charset=utf-8');
   assert.equal(metadata.filename, 'landlord-repair-notice-damp-broken-heater.txt');
   assert.match(metadata.title, /Landlord repair notice/);
+});
+
+test('normalizes favourite template ids and sorts favourites first', () => {
+  const favourites = normalizeFavouriteTemplates([
+    'rail-delay-compensation',
+    'unknown-template',
+    'refund-request',
+    'refund-request'
+  ]);
+  assert.deepEqual(favourites, ['rail-delay-compensation', 'refund-request']);
+
+  const sorted = sortTemplatesWithFavourites(filterTemplates({ category: 'Travel' }), favourites);
+  assert.deepEqual(sorted.map((template) => template.id), [
+    'rail-delay-compensation',
+    'airline-accessibility-complaint'
+  ]);
+});
+
+test('builds markdown export for a rendered template', () => {
+  const markdown = buildMarkdownExport('subject-access-request', {
+    organisation: 'Example Council',
+    item: 'housing records',
+    name: 'T. Resident'
+  });
+
+  assert.match(markdown, /^# Subject access request/);
+  assert.match(markdown, /Dear Example Council/);
+  assert.match(markdown, /Safety note/);
 });
