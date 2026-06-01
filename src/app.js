@@ -1,5 +1,6 @@
 import {
   buildTemplateBundle,
+  buildTemplateCasePack,
   buildTemplateBundleMetadata,
   buildMarkdownExport,
   buildTemplateExportMetadata,
@@ -22,6 +23,7 @@ const copyButton = document.querySelector('#copyTemplate');
 const downloadButton = document.querySelector('#downloadTemplate');
 const downloadMarkdownButton = document.querySelector('#downloadMarkdown');
 const copyBundleButton = document.querySelector('#copyBundle');
+const copyCasePackButton = document.querySelector('#copyCasePack');
 const downloadBundleMarkdownButton = document.querySelector('#downloadBundleMarkdown');
 const downloadBundleTextButton = document.querySelector('#downloadBundleText');
 const favouriteButton = document.querySelector('#favouriteTemplate');
@@ -190,6 +192,20 @@ async function copyBundle() {
   }
 }
 
+async function copyCasePack() {
+  const ids = selectedBundleIds();
+  if (ids.length === 0) {
+    status.textContent = 'Choose at least one template for the case pack.';
+    return;
+  }
+  try {
+    await navigator.clipboard?.writeText(buildTemplateCasePack(ids, values()).markdown);
+    status.textContent = 'Case pack copied locally. Nothing was sent to a server.';
+  } catch {
+    status.textContent = 'Copy failed. You can still download the pack or copy each preview manually.';
+  }
+}
+
 function downloadBundle(format = 'markdown') {
   const result = buildBundle(format);
   if (!result) return;
@@ -241,6 +257,7 @@ copyButton.addEventListener('click', copyTemplate);
 downloadButton.addEventListener('click', downloadTemplate);
 downloadMarkdownButton.addEventListener('click', downloadMarkdown);
 copyBundleButton.addEventListener('click', copyBundle);
+copyCasePackButton.addEventListener('click', copyCasePack);
 downloadBundleMarkdownButton.addEventListener('click', () => downloadBundle('markdown'));
 downloadBundleTextButton.addEventListener('click', () => downloadBundle('text'));
 favouriteButton.addEventListener('click', toggleFavourite);

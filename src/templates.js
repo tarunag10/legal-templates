@@ -374,3 +374,27 @@ export function buildTemplateBundleMetadata(ids = [], facts = {}, options = {}) 
     mimeType: format === 'text' ? 'text/plain;charset=utf-8' : 'text/markdown;charset=utf-8'
   };
 }
+
+export function buildTemplateCasePack(ids = [], facts = {}) {
+  const bundle = buildTemplateBundle(ids, facts, { format: 'markdown' });
+  const metadata = buildTemplateBundleMetadata(ids, facts, { format: 'markdown' });
+
+  return {
+    title: 'Template case pack',
+    filename: metadata.filename,
+    markdown: [
+      '# Template case pack',
+      '',
+      'Generated locally in the browser. Nothing was sent to a server.',
+      '',
+      '## Before sending',
+      '- [ ] Check deadlines, appeal windows, complaint stages, and local rules.',
+      '- [ ] Remove unnecessary account numbers, medical records, and private identifiers.',
+      '- [ ] Save copies of evidence and sent messages.',
+      '- [ ] Keep a note of the outcome requested in each letter.',
+      '',
+      '## Templates',
+      bundle.content.trim()
+    ].join('\n')
+  };
+}

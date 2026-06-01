@@ -4,6 +4,7 @@ import {
   buildMarkdownExport,
   buildTemplateBundle,
   buildTemplateBundleMetadata,
+  buildTemplateCasePack,
   buildTemplateExportMetadata,
   filterTemplates,
   getTemplateCategories,
@@ -145,4 +146,21 @@ test('builds bundle export metadata with a safe filename', () => {
   assert.equal(metadata.mimeType, 'text/markdown;charset=utf-8');
   assert.equal(metadata.filename, 'open-access-uk-template-pack-example-council-housing-team.md');
   assert.equal(metadata.title, 'Template pack (2 templates)');
+});
+
+test('builds case packs with safety checklist and template bundle', () => {
+  const pack = buildTemplateCasePack(['refund-request', 'subject-access-request'], {
+    organisation: 'Example Council',
+    trader: 'Example Shop',
+    item: 'faulty kettle',
+    name: 'T. Buyer'
+  });
+
+  assert.equal(pack.title, 'Template case pack');
+  assert.match(pack.filename, /^open-access-uk-template-pack-/);
+  assert.match(pack.markdown, /^# Template case pack/m);
+  assert.match(pack.markdown, /## Before sending/);
+  assert.match(pack.markdown, /Remove unnecessary account numbers/);
+  assert.match(pack.markdown, /## Templates/);
+  assert.match(pack.markdown, /Refund request/);
 });
