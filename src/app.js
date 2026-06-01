@@ -4,6 +4,7 @@ import {
   buildTemplateBundleMetadata,
   buildMarkdownExport,
   buildTemplateExportMetadata,
+  currentGuidance,
   filterTemplates,
   getTemplate,
   getTemplateCategories,
@@ -31,6 +32,7 @@ const selectFavouritesButton = document.querySelector('#selectFavourites');
 const showFavourites = document.querySelector('#showFavourites');
 const bundleOptions = document.querySelector('#bundle-options');
 const catalogueCards = document.querySelector('#catalogue-cards');
+const currentGuidanceMount = document.querySelector('#current-guidance');
 const favouritesKey = 'open-access-uk:legal-templates:favourites';
 
 function getFavourites() {
@@ -108,6 +110,25 @@ function renderBundleOptions(templates, favourites = []) {
       input.checked = favourites.includes(template.id);
       label.append(input, document.createTextNode(` ${template.title}`));
       return label;
+    })
+  );
+}
+
+function renderCurrentGuidance() {
+  currentGuidanceMount.replaceChildren(
+    ...currentGuidance.map((item) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      const heading = document.createElement('h3');
+      heading.textContent = item.title;
+      const detail = document.createElement('p');
+      detail.textContent = item.detail;
+      const link = document.createElement('a');
+      link.href = item.url;
+      link.rel = 'noreferrer';
+      link.textContent = item.source;
+      card.append(heading, detail, link);
+      return card;
     })
   );
 }
@@ -263,7 +284,8 @@ downloadBundleTextButton.addEventListener('click', () => downloadBundle('text'))
 favouriteButton.addEventListener('click', toggleFavourite);
 selectFavouritesButton.addEventListener('click', selectFavouriteTemplates);
 showFavourites.addEventListener('change', () => {
-  populateTemplates();
-  update();
+populateTemplates();
+update();
+renderCurrentGuidance();
 });
 update();

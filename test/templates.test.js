@@ -6,6 +6,7 @@ import {
   buildTemplateBundleMetadata,
   buildTemplateCasePack,
   buildTemplateExportMetadata,
+  currentGuidance,
   filterTemplates,
   getTemplateCategories,
   normalizeFavouriteTemplates,
@@ -161,6 +162,15 @@ test('builds case packs with safety checklist and template bundle', () => {
   assert.match(pack.markdown, /^# Template case pack/m);
   assert.match(pack.markdown, /## Before sending/);
   assert.match(pack.markdown, /Remove unnecessary account numbers/);
+  assert.match(pack.markdown, /Current source notes/);
+  assert.match(pack.markdown, /20 working days/);
   assert.match(pack.markdown, /## Templates/);
   assert.match(pack.markdown, /Refund request/);
+});
+
+test('exposes current source-backed legal template guidance', () => {
+  assert.equal(currentGuidance.length, 4);
+  assert.ok(currentGuidance.some((item) => item.title.includes('Consumer')));
+  assert.ok(currentGuidance.some((item) => item.detail.includes('one month')));
+  assert.ok(currentGuidance.every((item) => item.url.startsWith('https://')));
 });

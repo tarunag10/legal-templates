@@ -1,5 +1,32 @@
 const sharedSafety = 'This is a template, not legal advice. Check deadlines, contract terms, local procedures, and whether specialist advice is needed before sending.';
 
+export const currentGuidance = [
+  {
+    title: 'Consumer refunds and remedies',
+    detail: 'GOV.UK says traders must offer a full refund when an item is faulty, not as described, or does not do what it is supposed to do; repair or replacement rights can also apply.',
+    source: 'GOV.UK returns and refunds',
+    url: 'https://www.gov.uk/accepting-returns-and-giving-refunds'
+  },
+  {
+    title: 'Subject access requests',
+    detail: 'ICO guidance says subject access requests can be verbal or written and should be answered without undue delay and within one month unless an extension lawfully applies.',
+    source: 'ICO subject access guidance',
+    url: 'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/subject-access-requests/a-guide-to-subject-access/'
+  },
+  {
+    title: 'FOI timing and accessible help',
+    detail: 'GOV.UK says FOI requests are normally written requests, public authorities should help if disability prevents writing, and responses should usually arrive within 20 working days.',
+    source: 'GOV.UK FOI requests',
+    url: 'https://www.gov.uk/make-a-freedom-of-information-request/how-to-make-an-foi-request'
+  },
+  {
+    title: 'Before court',
+    detail: 'Civil pre-action guidance expects parties to exchange enough information to understand each other’s position, consider settlement or ADR, and reduce avoidable costs.',
+    source: 'Civil Procedure Rules pre-action conduct',
+    url: 'https://www.justice.gov.uk/courts/procedure-rules/civil/rules/pd_pre-action_conduct'
+  }
+];
+
 export const templateCatalogue = {
   'refund-request': {
     title: 'Refund request',
@@ -392,6 +419,9 @@ export function buildTemplateCasePack(ids = [], facts = {}) {
       '- [ ] Remove unnecessary account numbers, medical records, and private identifiers.',
       '- [ ] Save copies of evidence and sent messages.',
       '- [ ] Keep a note of the outcome requested in each letter.',
+      '',
+      '## Current source notes',
+      ...currentGuidance.map((item) => `- ${item.title}: ${item.detail} Source: ${item.url}`),
       '',
       '## Templates',
       bundle.content.trim()
