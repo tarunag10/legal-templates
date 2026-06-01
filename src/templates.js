@@ -291,3 +291,86 @@ ${rendered}
 \`\`\`
 `;
 }
+
+function normalizeBundleIds(ids = []) {
+  return normalizeFavouriteTemplates(ids);
+}
+
+function templateBundleSubject(facts = {}, templates = []) {
+  return facts.organisation || facts.trader || facts.property || facts.item || templates[0]?.title || 'templates';
+}
+
+export function buildTemplateBundle(ids = [], facts = {}, options = {}) {
+  const format = options.format === 'text' ? 'text' : 'markdown';
+  const templates = normalizeBundleIds(ids).map((id) => ({ id, ...getTemplate(id) }));
+  const safetyNotes = [
+    ...new Set([
+      sharedSafety,
+      ...templates.map((template) => template.safety)
+    ])
+  ];
+
+  if (format === 'text') {
+    const sections = templates.map((template, index) => [
+      `${index + 1}. ${template.title}`,
+      `Category: ${template.category}`,
+      template.summary,
+      '',
+      renderTemplate(template.id, facts)
+    ].join('\n'));
+    return {
+      count: templates.length,
+      format,
+      content: [
+        'Open Access UK template pack',
+        '',
+        `Templates: ${templates.length}`,
+        'This pack was generated locally in your browser. Nothing was sent to a server.',
+        '',
+        ...sections,
+        '',
+        'Safety notes',
+        ...safetyNotes.map((note) => `- ${note}`)
+      ].join('\n')
+    };
+  }
+
+  const sections = templates.map((template) => `## ${template.title}
+
+Category: ${template.category}
+
+${template.summary}
+
+\`\`\`text
+${renderTemplate(template.id, facts)}
+\`\`\`
+`);
+
+  return {
+    count: templates.length,
+    format,
+    content: `# Open Access UK template pack
+
+Templates: ${templates.length}
+
+This pack was generated locally in your browser. Nothing was sent to a server.
+
+${sections.join('\n')}
+## Safety notes
+
+${safetyNotes.map((note) => `- ${note}`).join('\n')}
+`
+  };
+}
+
+export function buildTemplateBundleMetadata(ids = [], facts = {}, options = {}) {
+  const format = options.format === 'text' ? 'text' : 'markdown';
+  const templates = normalizeBundleIds(ids).map((id) => ({ id, ...getTemplate(id) }));
+  const subject = slugify(templateBundleSubject(facts, templates)) || 'templates';
+  const extension = format === 'text' ? 'txt' : 'md';
+  return {
+    title: `Template pack (${templates.length} ${templates.length === 1 ? 'template' : 'templates'})`,
+    filename: `open-access-uk-template-pack-${subject}.${extension}`,
+    mimeType: format === 'text' ? 'text/plain;charset=utf-8' : 'text/markdown;charset=utf-8'
+  };
+}

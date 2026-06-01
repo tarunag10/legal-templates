@@ -1,4 +1,6 @@
 import {
+  buildTemplateBundle,
+  buildTemplateBundleMetadata,
   buildMarkdownExport,
   buildTemplateExportMetadata,
   filterTemplates,
@@ -19,8 +21,13 @@ const status = document.querySelector('#status');
 const copyButton = document.querySelector('#copyTemplate');
 const downloadButton = document.querySelector('#downloadTemplate');
 const downloadMarkdownButton = document.querySelector('#downloadMarkdown');
+const copyBundleButton = document.querySelector('#copyBundle');
+const downloadBundleMarkdownButton = document.querySelector('#downloadBundleMarkdown');
+const downloadBundleTextButton = document.querySelector('#downloadBundleText');
 const favouriteButton = document.querySelector('#favouriteTemplate');
+const selectFavouritesButton = document.querySelector('#selectFavourites');
 const showFavourites = document.querySelector('#showFavourites');
+const bundleOptions = document.querySelector('#bundle-options');
 const catalogueCards = document.querySelector('#catalogue-cards');
 const favouritesKey = 'open-access-uk:legal-templates:favourites';
 
@@ -66,6 +73,7 @@ function populateTemplates(selectedId = templateSelect.value) {
     templateSelect.value = templates[0].id;
   }
   renderCatalogue(templates, favourites);
+  renderBundleOptions(templates, favourites);
 }
 
 function renderCatalogue(templates, favourites = []) {
@@ -82,6 +90,22 @@ function renderCatalogue(templates, favourites = []) {
       summary.textContent = template.summary;
       card.append(heading, category, summary);
       return card;
+    })
+  );
+}
+
+function renderBundleOptions(templates, favourites = []) {
+  bundleOptions.replaceChildren(
+    ...templates.map((template) => {
+      const label = document.createElement('label');
+      label.className = 'checkbox-row';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'bundleTemplate';
+      input.value = template.id;
+      input.checked = favourites.includes(template.id);
+      label.append(input, document.createTextNode(` ${template.title}`));
+      return label;
     })
   );
 }
@@ -138,6 +162,56 @@ function downloadMarkdown() {
   status.textContent = `Downloaded ${filename}. Nothing was sent to a server.`;
 }
 
+function selectedBundleIds() {
+  return [...bundleOptions.querySelectorAll('input[name="bundleTemplate"]:checked')]
+    .map((input) => input.value);
+}
+
+function buildBundle(format = 'markdown') {
+  const ids = selectedBundleIds();
+  if (ids.length === 0) {
+    status.textContent = 'Choose at least one template for the pack.';
+    return null;
+  }
+  return {
+    bundle: buildTemplateBundle(ids, values(), { format }),
+    metadata: buildTemplateBundleMetadata(ids, values(), { format })
+  };
+}
+
+async function copyBundle() {
+  const result = buildBundle('text');
+  if (!result) return;
+  try {
+    await navigator.clipboard?.writeText(result.bundle.content);
+    status.textContent = `Copied ${result.metadata.title.toLowerCase()} locally. Nothing was sent to a server.`;
+  } catch {
+    status.textContent = 'Copy failed. You can still download the pack or copy each preview manually.';
+  }
+}
+
+function downloadBundle(format = 'markdown') {
+  const result = buildBundle(format);
+  if (!result) return;
+  const blob = new Blob([result.bundle.content], { type: result.metadata.mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = result.metadata.filename;
+  link.click();
+  URL.revokeObjectURL(url);
+  status.textContent = `Downloaded ${result.metadata.filename}. Nothing was sent to a server.`;
+}
+
+function selectFavouriteTemplates() {
+  const favourites = getFavourites();
+  const boxes = bundleOptions.querySelectorAll('input[name="bundleTemplate"]');
+  for (const box of boxes) {
+    box.checked = favourites.includes(box.value);
+  }
+  status.textContent = favourites.length > 0 ? 'Selected local favourites for the pack.' : 'No local favourites saved yet.';
+}
+
 function toggleFavourite() {
   const data = values();
   const favourites = getFavourites();
@@ -166,7 +240,11 @@ form.addEventListener('submit', (event) => {
 copyButton.addEventListener('click', copyTemplate);
 downloadButton.addEventListener('click', downloadTemplate);
 downloadMarkdownButton.addEventListener('click', downloadMarkdown);
+copyBundleButton.addEventListener('click', copyBundle);
+downloadBundleMarkdownButton.addEventListener('click', () => downloadBundle('markdown'));
+downloadBundleTextButton.addEventListener('click', () => downloadBundle('text'));
 favouriteButton.addEventListener('click', toggleFavourite);
+selectFavouritesButton.addEventListener('click', selectFavouriteTemplates);
 showFavourites.addEventListener('change', () => {
   populateTemplates();
   update();

@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildMarkdownExport,
+  buildTemplateBundle,
+  buildTemplateBundleMetadata,
   buildTemplateExportMetadata,
   filterTemplates,
   getTemplateCategories,
@@ -116,4 +118,31 @@ test('builds markdown export for a rendered template', () => {
   assert.match(markdown, /^# Subject access request/);
   assert.match(markdown, /Dear Example Council/);
   assert.match(markdown, /Safety note/);
+});
+
+test('builds a combined markdown bundle for selected templates', () => {
+  const bundle = buildTemplateBundle(['refund-request', 'subject-access-request', 'unknown-template'], {
+    organisation: 'Example Council',
+    trader: 'Example Shop',
+    item: 'faulty kettle',
+    name: 'T. Buyer'
+  });
+
+  assert.equal(bundle.count, 2);
+  assert.match(bundle.content, /^# Open Access UK template pack/);
+  assert.match(bundle.content, /## Refund request/);
+  assert.match(bundle.content, /## Subject access request/);
+  assert.match(bundle.content, /faulty kettle/);
+  assert.match(bundle.content, /Safety notes/);
+  assert.match(bundle.content, /not legal advice/i);
+});
+
+test('builds bundle export metadata with a safe filename', () => {
+  const metadata = buildTemplateBundleMetadata(['refund-request', 'subject-access-request'], {
+    organisation: 'Example Council / Housing Team'
+  });
+
+  assert.equal(metadata.mimeType, 'text/markdown;charset=utf-8');
+  assert.equal(metadata.filename, 'open-access-uk-template-pack-example-council-housing-team.md');
+  assert.equal(metadata.title, 'Template pack (2 templates)');
 });
