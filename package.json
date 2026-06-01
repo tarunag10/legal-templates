@@ -1,0 +1,11 @@
+{
+  "name": "legal-templates",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/check-static.mjs"
+  },
+  "license": "MIT"
+}

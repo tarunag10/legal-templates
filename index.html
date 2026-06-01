@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legal Templates UK</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Open Access UK</a>
+    <nav aria-label="Primary">
+      <a href="#tool">Tool</a>
+      <a href="#catalogue">Catalogue</a>
+      <a href="#contribute">Contribute</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Legal Templates UK</h1>
+        <p>Browser-only starter letters for common consumer, housing, data, education, travel, accessibility, banking, and council problems.</p>
+      </div>
+      <div class="card warning">
+        <h2>Safety note</h2>
+        <p>These templates are practical drafting aids, not legal advice. Check deadlines, local procedures, contract terms, appeal windows, and whether specialist advice is needed.</p>
+      </div>
+    </section>
+
+    <section id="tool" class="grid" aria-label="Template generator">
+      <form class="panel" aria-describedby="template-summary status">
+        <label for="category">Category</label>
+        <select id="category" name="category"></select>
+
+        <label for="search">Search templates</label>
+        <input id="search" name="search" placeholder="refund, ombudsman, rail, data">
+
+        <label for="template">Template</label>
+        <select id="template" name="template"></select>
+        <p id="template-summary" class="summary" aria-live="polite"></p>
+
+        <label for="organisation">Trader, landlord, bank, council, or provider</label>
+        <input id="organisation" name="organisation" value="Example Shop">
+
+        <label for="trader">Trader name for refund letters</label>
+        <input id="trader" name="trader" value="Example Shop">
+
+        <label for="property">Property address for repair notices</label>
+        <input id="property" name="property" value="12 Example Street">
+
+        <label for="item">Item, service, journey, complaint, or issue</label>
+        <input id="item" name="item" value="faulty kettle">
+
+        <label for="date">Date or period</label>
+        <input id="date" name="date" value="1 June 2026">
+
+        <label for="amount">Amount, fare, or disputed payment</label>
+        <input id="amount" name="amount" value="GBP 49.99">
+
+        <label for="outcome">Outcome requested</label>
+        <textarea id="outcome" name="outcome">a refund to my original payment method</textarea>
+
+        <label for="evidence">Evidence available</label>
+        <textarea id="evidence" name="evidence">I can provide the receipt, photos, order confirmation, and copies of previous messages.</textarea>
+
+        <label for="name">Your name</label>
+        <input id="name" name="name" value="T. Buyer">
+
+        <div class="actions" aria-label="Template actions">
+          <button id="copyTemplate" type="button">Copy</button>
+          <button id="downloadTemplate" type="button" class="secondary">Download .txt</button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <article id="output" class="preview" aria-label="Generated template"></article>
+    </section>
+
+    <section id="catalogue" class="footer-band">
+      <h2>Catalogue</h2>
+      <div id="catalogue-cards" class="cards" aria-live="polite">
+        <article class="card"><h3>Refund request</h3><p>Consumer Rights Act remedy request for goods, services, or digital content.</p></article>
+        <article class="card"><h3>Chargeback or bank complaint</h3><p>Ask a bank to assess chargeback, Section 75, or its complaint process.</p></article>
+        <article class="card"><h3>Landlord repair notice</h3><p>Report disrepair, ask for inspection and repair dates, and keep evidence.</p></article>
+        <article class="card"><h3>Subject access request</h3><p>Request personal data and supplementary information under UK data protection law.</p></article>
+        <article class="card"><h3>University adjustment request</h3><p>Ask for disability adjustments for exams, teaching, placements, or student services.</p></article>
+        <article class="card"><h3>Rail delay compensation</h3><p>Claim Delay Repay or Passenger Charter compensation for delayed journeys.</p></article>
+        <article class="card"><h3>Airline assistance complaint</h3><p>Complain about special assistance, mobility-aid handling, or airport support failures.</p></article>
+        <article class="card"><h3>Council escalation</h3><p>Escalate unresolved service failures through a council complaint process.</p></article>
+      </div>
+    </section>
+
+    <section id="contribute" class="footer-band">
+      <h2>Contribute</h2>
+      <p>Add templates with official or specialist public-interest sources, plain-English safety notes, tests, and no backend dependency. Avoid example content that includes real account numbers, medical records, or private addresses.</p>
+    </section>
+  </main>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
