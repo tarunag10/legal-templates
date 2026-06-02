@@ -2,6 +2,7 @@ import {
   buildTemplateBundle,
   buildTemplateCasePack,
   buildTemplateBundleMetadata,
+  buildTemplateLocalActionPack,
   buildMarkdownExport,
   buildTemplateExportMetadata,
   currentGuidance,
@@ -25,6 +26,7 @@ const downloadButton = document.querySelector('#downloadTemplate');
 const downloadMarkdownButton = document.querySelector('#downloadMarkdown');
 const copyBundleButton = document.querySelector('#copyBundle');
 const copyCasePackButton = document.querySelector('#copyCasePack');
+const copyLocalActionPackButton = document.querySelector('#copyLocalActionPack');
 const downloadBundleMarkdownButton = document.querySelector('#downloadBundleMarkdown');
 const downloadBundleTextButton = document.querySelector('#downloadBundleText');
 const favouriteButton = document.querySelector('#favouriteTemplate');
@@ -227,6 +229,17 @@ async function copyCasePack() {
   }
 }
 
+async function copyLocalActionPack() {
+  const ids = selectedBundleIds();
+  const actionIds = ids.length > 0 ? ids : [values().template];
+  try {
+    await navigator.clipboard?.writeText(buildTemplateLocalActionPack(actionIds, values()).markdown);
+    status.textContent = 'Local action pack copied locally. Nothing was sent to a server.';
+  } catch {
+    status.textContent = 'Copy failed. You can still download the pack or copy each preview manually.';
+  }
+}
+
 function downloadBundle(format = 'markdown') {
   const result = buildBundle(format);
   if (!result) return;
@@ -279,6 +292,7 @@ downloadButton.addEventListener('click', downloadTemplate);
 downloadMarkdownButton.addEventListener('click', downloadMarkdown);
 copyBundleButton.addEventListener('click', copyBundle);
 copyCasePackButton.addEventListener('click', copyCasePack);
+copyLocalActionPackButton.addEventListener('click', copyLocalActionPack);
 downloadBundleMarkdownButton.addEventListener('click', () => downloadBundle('markdown'));
 downloadBundleTextButton.addEventListener('click', () => downloadBundle('text'));
 favouriteButton.addEventListener('click', toggleFavourite);

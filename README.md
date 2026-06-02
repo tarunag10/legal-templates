@@ -17,7 +17,7 @@ Open `index.html` in a browser. This repository is intentionally no-backend and 
 - Airline assistance complaint: accessibility and special-assistance complaint wording.
 - Council escalation: formal complaint escalation and Local Government and Social Care Ombudsman prompt.
 
-The browser UI includes category filtering, text search across template metadata, dynamic catalogue cards, local copy support, `.txt` downloads with safe generated filenames, browser-local favourite templates, favourites-first ordering, and Markdown downloads for templates. The eight starter templates remain the baseline catalogue.
+The browser UI includes category filtering, text search across template metadata, dynamic catalogue cards, local copy support, `.txt` downloads with safe generated filenames, browser-local favourite templates, favourites-first ordering, Markdown downloads for templates, and copyable local action packs with evidence, safety, next-step, and escalation prompts. The eight starter templates remain the baseline catalogue.
 
 ## Source checks
 

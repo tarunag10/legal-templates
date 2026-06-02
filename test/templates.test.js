@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildMarkdownExport,
+  buildTemplateLocalActionPack,
   buildTemplateBundle,
   buildTemplateBundleMetadata,
   buildTemplateCasePack,
@@ -166,6 +167,26 @@ test('builds case packs with safety checklist and template bundle', () => {
   assert.match(pack.markdown, /20 working days/);
   assert.match(pack.markdown, /## Templates/);
   assert.match(pack.markdown, /Refund request/);
+});
+
+test('builds a local action pack for selected legal templates', () => {
+  const pack = buildTemplateLocalActionPack(['chargeback-bank-complaint', 'subject-access-request'], {
+    organisation: 'Example Bank',
+    item: 'disputed card payment',
+    date: '1 June 2026'
+  });
+
+  assert.equal(pack.title, 'Local action pack');
+  assert.equal(pack.templateCount, 2);
+  assert.equal(pack.contextLabel, 'Chargeback or bank complaint + Subject access request');
+  assert.ok(pack.evidence.some((item) => /receipts/i.test(item)));
+  assert.ok(pack.evidence.some((item) => /identity checks/i.test(item)));
+  assert.ok(pack.safety.some((item) => /full card numbers/i.test(item)));
+  assert.ok(pack.nextSteps.some((item) => /calendar/i.test(item)));
+  assert.ok(pack.escalation.some((item) => /Financial Ombudsman/i.test(item)));
+  assert.match(pack.markdown, /^# Local action pack/m);
+  assert.match(pack.markdown, /Example Bank/);
+  assert.match(pack.markdown, /Nothing was sent to a server/);
 });
 
 test('exposes current source-backed legal template guidance', () => {
