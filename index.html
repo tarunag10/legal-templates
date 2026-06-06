@@ -7,13 +7,18 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
+  <a class="skip-link" href="#tool">Skip to content</a>
+  <header class="site-header">
     <a class="brand" href="index.html">Open Access UK</a>
-    <nav aria-label="Primary">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+      Menu
+    </button>
+    <nav id="primary-nav" aria-label="Primary">
       <a href="#tool">Tool</a>
       <a href="#catalogue">Catalogue</a>
       <a href="#contribute">Contribute</a>
     </nav>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">Dark theme</button>
   </header>
   <main>
     <section class="hero">
@@ -137,6 +142,14 @@
       <p>Add templates with official or specialist public-interest sources, plain-English safety notes, tests, and no backend dependency. Avoid example content that includes real account numbers, medical records, or private addresses.</p>
     </section>
   </main>
+  <footer class="site-footer">
+    <nav aria-label="Footer">
+      <a href="index.html">Open Access UK</a>
+      <a href="#tool">Tool</a>
+      <a href="LICENSE">MIT License</a>
+    </nav>
+    <p>Open-source, privacy-first, and local to your browser.</p>
+  </footer>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>
