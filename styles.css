@@ -1,4 +1,330 @@
 /* ===== styles.css ===== */
+/* ===== styles.css ===== */
+/* ===== ../shared/suite-skin.css ===== */
+/* Open Access UK suite cohesion layer.
+   Imported by each mini-tool and inlined by its static build. */
+:root,
+[data-theme='light'] {
+  --paper: #ffffff;
+  --paper-2: #f7f5ef;
+  --surface: #ffffff;
+  --ink: #111111;
+  --ink-muted: #55504a;
+  --accent: #cf1f1f;
+  --accent-ink: #ffffff;
+  --accent-soft: #f4dfdc;
+  --teal: #0b4f9f;
+  --success: #18723c;
+  --warning: #c47a00;
+  --danger: #cf1f1f;
+  --line: #d8d2c8;
+  --focus-ring: #0b4f9f;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-sm: none;
+  --shadow-md: 0 14px 34px rgba(17, 17, 17, 0.08);
+  --shadow-lg: 0 22px 52px rgba(17, 17, 17, 0.1);
+  --max: 1320px;
+}
+
+[data-theme='dark'] {
+  --paper: #0d1114;
+  --paper-2: #141a1f;
+  --surface: #11181d;
+  --ink: #f8f5ee;
+  --ink-muted: #cbc3b8;
+  --accent: #ff6a5f;
+  --accent-ink: #111111;
+  --accent-soft: #35201f;
+  --teal: #75b7ff;
+  --success: #74d797;
+  --warning: #f0b651;
+  --danger: #ff6a5f;
+  --line: #333b42;
+  --focus-ring: #75b7ff;
+}
+
+body {
+  background:
+    linear-gradient(90deg, rgba(17, 17, 17, 0.035) 1px, transparent 1px) 0 0 / 88px 88px,
+    var(--paper);
+  letter-spacing: 0;
+}
+
+main,
+.site-header,
+.site-footer {
+  width: min(var(--max), calc(100% - clamp(32px, 6vw, 92px)));
+}
+
+.site-header {
+  min-height: 72px;
+  padding: 0;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border-bottom-color: var(--line);
+}
+
+.brand {
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.7rem);
+  font-weight: 800;
+}
+
+.site-header nav a,
+.theme-toggle,
+.nav-toggle,
+.button,
+button {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.theme-toggle,
+.nav-toggle,
+.button,
+button,
+input,
+select,
+textarea {
+  border-radius: 4px;
+}
+
+.button,
+button {
+  min-height: 46px;
+  box-shadow: none;
+}
+
+.button.secondary,
+button.secondary {
+  background: var(--surface);
+}
+
+.hero {
+  grid-template-columns: minmax(280px, 0.72fr) minmax(320px, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  padding: clamp(34px, 5vw, 72px) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero h1 {
+  max-width: 720px;
+  margin-bottom: var(--space-4);
+  font-size: clamp(2.8rem, 5.2vw, 5.4rem);
+  font-weight: 800;
+  line-height: 0.97;
+}
+
+.hero h1::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 4px;
+  margin-top: 18px;
+  background: var(--accent);
+}
+
+.hero p {
+  max-width: 58ch;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem);
+  line-height: 1.38;
+}
+
+.product-panel,
+.mini-window,
+.panel,
+.card,
+.preview,
+.gtm-strip article,
+.linter,
+.result-card,
+.template-card,
+.summary-grid article,
+.request-card,
+.case-card,
+.detail-panel {
+  border-color: var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: none;
+}
+
+.product-panel {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--line) 48%, transparent) 1px, transparent 1px)
+      0 0 / 14px 14px,
+    var(--paper);
+}
+
+.mini-window {
+  position: relative;
+  padding-left: 56px !important;
+}
+
+.mini-window::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--teal);
+}
+
+.mini-window i {
+  display: inline-block;
+  width: 44px;
+  height: 5px;
+  margin: 12px 5px 0 0;
+  background: var(--line);
+}
+
+.gtm-strip {
+  border-bottom: 1px solid var(--line);
+}
+
+.gtm-strip span {
+  border-radius: 50%;
+  background: var(--teal);
+  color: #ffffff;
+}
+
+label {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+  min-height: 44px;
+  background: var(--surface);
+}
+
+textarea {
+  line-height: 1.45;
+}
+
+.site-footer {
+  margin-top: var(--space-8);
+  border-top-color: var(--line);
+}
+
+@media (max-width: 880px) {
+  main,
+  .site-header,
+  .site-footer {
+    width: min(var(--max), calc(100% - 32px));
+  }
+
+  .site-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px;
+    min-height: 0;
+    padding: 10px 0;
+  }
+
+  .brand {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-header nav {
+    grid-column: 1 / -1;
+    gap: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+  }
+
+  .site-header nav a {
+    min-height: 44px;
+    padding: 10px 0;
+  }
+
+  #theme-toggle {
+    width: 40px;
+    min-height: 38px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--ink) 0 6px, transparent 6.5px) center / 18px 18px no-repeat,
+      var(--surface);
+    color: transparent;
+    white-space: nowrap;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 24px 0 22px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.45rem, 11vw, 3.5rem);
+  }
+
+  .hero p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.48;
+  }
+
+  .hero-actions,
+  .actions {
+    gap: 10px;
+  }
+
+  .hero-actions .button,
+  .actions .button,
+  .actions button,
+  .actions label.button {
+    width: 100%;
+  }
+
+  .product-panel {
+    padding: 0 !important;
+    border: 0;
+    background: transparent !important;
+  }
+
+  .mini-window {
+    min-height: 88px;
+    padding: 22px 20px 20px 64px !important;
+  }
+
+  .gtm-strip,
+  .cards,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gtm-strip {
+    padding: 24px 0;
+  }
+
+  .card,
+  .panel,
+  .preview,
+  .gtm-strip article {
+    padding: 18px;
+  }
+
+  .site-footer nav {
+    gap: 12px 20px;
+  }
+}
+
+/* ===== styles.css ===== */
+/* ===== styles.css ===== */
+/* ===== styles.css ===== */
 /* ===== ../shared/claude/tokens.css ===== */
 /* shared/claude/tokens.css — Claude design language, single source of truth. */
 :root,

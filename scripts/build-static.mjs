@@ -55,9 +55,9 @@ function collectJsImports(source, fromFile, collected = new Set()) {
     if (importPath.startsWith('.')) {
       const resolved = resolveImport(fromFile, importPath);
       if (resolved && !collected.has(resolved)) {
-        collected.add(resolved);
         const subSource = readFileSync(resolved, 'utf8');
         collectJsImports(subSource, resolved, collected);
+        collected.add(resolved);
       }
     }
   }
@@ -121,48 +121,67 @@ function bundleJs(entryFile, outputFile) {
   const bundled = [];
   const moduleVarNames = new Map();
 
-  // First, build the bundled output. Entry first, then dependencies in order.
-  for (let i = 0; i < allFiles.length; i++) {
+  // Precompute names so the entry can destructure imports after dependencies are emitted.
+  for (let i = 1; i < allFiles.length; i++) {
     const file = allFiles[i];
-    const mod = modules.get(file);
-    const isEntry = i === 0;
+    moduleVarNames.set(
+      file,
+      `__m${i}_${file.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_')}`
+    );
+  }
 
-    // Determine the variable name for this module (for non-entry modules)
-    const varName = isEntry
-      ? null
-      : `__m${i}_${file.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_')}`;
-
-    if (!isEntry) {
-      moduleVarNames.set(file, varName);
-      const exportList = [...mod.exports].join(', ');
-      // Wrap in IIFE: const __m1 = (() => { ... return { exports... }; })();
-      const wrapped = `const ${varName} = (() => {\n${mod.body}\nreturn { ${exportList} };\n})();`;
-      const rel = relative(root, file);
-      bundled.push(`// ===== ${rel} =====\n${wrapped}\n`);
-    } else {
-      // Entry: replace import statements with references to module vars
-      let body = mod.body;
-      const imports = parseImports(readFileSync(file, 'utf8'));
-      for (const imp of imports) {
+  function importBindings(file) {
+    const imports = parseImports(readFileSync(file, 'utf8'));
+    return imports
+      .map((imp) => {
         const resolvedFile = resolveImport(file, imp.source);
         const modVar = moduleVarNames.get(resolvedFile);
-        if (!modVar) continue;
-        if (imp.names[0]?.namespace) {
-          body = body.replace(imp.full, `const ${imp.names[0].namespace} = ${modVar};`);
-        } else {
-          const destructures = imp.names
-            .map((n) => {
-              if (n.default) return `default: ${n.default}`;
-              return `${n.imported} as ${n.local}`;
-            })
-            .join(', ');
-          body = body.replace(imp.full, `const { ${destructures} } = ${modVar};`);
-        }
-      }
-      const rel = relative(root, file);
-      bundled.push(`// ===== ${rel} =====\n${body}\n`);
+        if (!modVar) return '';
+        if (imp.names[0]?.namespace) return `const ${imp.names[0].namespace} = ${modVar};`;
+        const destructures = imp.names
+          .map((n) => {
+            if (n.default) return `default: ${n.default}`;
+            return `${n.imported}: ${n.local}`;
+          })
+          .join(', ');
+        return `const { ${destructures} } = ${modVar};`;
+      })
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  // Emit dependencies before the modules that consume them.
+  for (let i = 1; i < allFiles.length; i++) {
+    const file = allFiles[i];
+    const mod = modules.get(file);
+    const varName = moduleVarNames.get(file);
+    const exportList = [...mod.exports].join(', ');
+    const bindings = importBindings(file);
+    const wrapped = `const ${varName} = (() => {\n${bindings ? `${bindings}\n` : ''}${mod.body}\nreturn { ${exportList} };\n})();`;
+    const rel = relative(root, file);
+    bundled.push(`// ===== ${rel} =====\n${wrapped}\n`);
+  }
+
+  const entryPath = allFiles[0];
+  let body = readFileSync(entryPath, 'utf8');
+  const imports = parseImports(readFileSync(entryPath, 'utf8'));
+  for (const imp of imports) {
+    const resolvedFile = resolveImport(entryPath, imp.source);
+    const modVar = moduleVarNames.get(resolvedFile);
+    if (!modVar) continue;
+    if (imp.names[0]?.namespace) {
+      body = body.replace(imp.full, `const ${imp.names[0].namespace} = ${modVar};`);
+    } else {
+      const destructures = imp.names
+        .map((n) => {
+          if (n.default) return `default: ${n.default}`;
+          return `${n.imported}: ${n.local}`;
+        })
+        .join(', ');
+      body = body.replace(imp.full, `const { ${destructures} } = ${modVar};`);
     }
   }
+  bundled.push(`// ===== ${relative(root, entryPath)} =====\n${body}\n`);
 
   mkdirSync(dirname(outputFile), { recursive: true });
   writeFileSync(outputFile, bundled.join('\n'));
