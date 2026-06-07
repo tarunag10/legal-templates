@@ -1,8 +1,504 @@
-@import url('../shared/claude/tokens.css');
-@import url('../shared/claude/components.css');
-@import url('../shared/claude/motion.css');
-@import url('../shared/claude/print.css');
+/* ===== styles.css ===== */
+/* ===== ../shared/claude/tokens.css ===== */
+/* shared/claude/tokens.css — Claude design language, single source of truth. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --paper: #faf9f5;
+  --paper-2: #f5f4ee;
+  --surface: #ffffff;
+  --ink: #1f1e1c;
+  --ink-muted: #56524a;
+  --accent: #c2410c;
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e7df;
+  --teal: #0f5b5b;
+  --success: #1a6a3c;
+  --warning: #8a5a00;
+  --danger: #b42318;
+  --line: #8f8b80;
+  --focus-ring: #c2410c;
 
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, monospace;
+
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3rem);
+  --step-4: clamp(2.6rem, 1.9rem + 3.5vw, 4.6rem);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+
+  --shadow-sm: 0 1px 2px rgba(31, 30, 28, 0.06);
+  --shadow-md: 0 12px 32px rgba(31, 30, 28, 0.1);
+  --shadow-lg: 0 28px 64px rgba(31, 30, 28, 0.14);
+
+  --max: 1180px;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #1c1a17;
+  --paper-2: #262320;
+  --surface: #2b2824;
+  --ink: #f6f4ee;
+  --ink-muted: #bdb7ab;
+  --accent: #e8997a;
+  --accent-ink: #1c1a17;
+  --accent-soft: #3a2c25;
+  --teal: #5fc9c9;
+  --success: #5fd08a;
+  --warning: #e0b150;
+  --danger: #f0857c;
+  --line: #787266;
+  --focus-ring: #e8997a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --paper: #1c1a17;
+    --paper-2: #262320;
+    --surface: #2b2824;
+    --ink: #f6f4ee;
+    --ink-muted: #bdb7ab;
+    --accent: #e8997a;
+    --accent-ink: #1c1a17;
+    --accent-soft: #3a2c25;
+    --teal: #5fc9c9;
+    --success: #5fd08a;
+    --warning: #e0b150;
+    --danger: #f0857c;
+    --line: #787266;
+    --focus-ring: #e8997a;
+  }
+}
+
+/* ===== ../shared/claude/components.css ===== */
+/* shared/claude/components.css — reusable Claude components. Uses tokens.css vars. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+
+main {
+  width: min(var(--max), calc(100% - var(--space-6)));
+  margin: 0 auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.08;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: var(--step-4);
+}
+h2 {
+  font-size: var(--step-3);
+}
+h3 {
+  font-size: var(--step-1);
+}
+
+a {
+  color: var(--teal);
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 30;
+  transform: translateY(-150%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Header + nav */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  width: min(var(--max), calc(100% - var(--space-6)));
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-1);
+  color: var(--ink);
+  text-decoration: none;
+  margin-right: auto;
+}
+.site-header nav {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+.site-header nav a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  font-size: var(--step--1);
+}
+.site-header nav a:hover {
+  color: var(--ink);
+}
+.nav-toggle {
+  display: none;
+}
+.theme-toggle {
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Buttons */
+.button,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+  box-shadow: var(--shadow-sm);
+}
+.button:hover,
+button:hover {
+  box-shadow: var(--shadow-md);
+}
+.button.secondary,
+button.secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.button.ghost,
+button.ghost {
+  background: transparent;
+  color: var(--accent);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Cards + panels */
+.card,
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+.card h3 {
+  margin-top: 0;
+}
+.card p {
+  color: var(--ink-muted);
+}
+
+/* Form controls */
+label {
+  display: block;
+  font-weight: 600;
+  margin: var(--space-4) 0 var(--space-2);
+}
+input,
+select,
+textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+textarea {
+  min-height: 140px;
+}
+
+/* Hero */
+.hero {
+  display: grid;
+  gap: var(--space-7);
+  padding: var(--space-8) 0;
+}
+.hero h1 {
+  margin: 0 0 var(--space-4);
+}
+.hero p {
+  font-size: var(--step-1);
+  color: var(--ink-muted);
+  max-width: 60ch;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* Tags + table */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Code / token window */
+.code-window {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-2);
+  padding: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  overflow: auto;
+}
+
+/* Status toast / live region */
+.toast {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Meter / readiness ring base */
+.meter {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.meter > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* Footer */
+.site-footer {
+  margin-top: var(--space-9);
+  padding: var(--space-7) 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+.site-footer a {
+  color: var(--ink-muted);
+}
+
+@media (max-width: 720px) {
+  .nav-toggle {
+    display: inline-flex;
+    min-height: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  .site-header nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+  .site-header nav.is-open {
+    display: flex;
+  }
+}
+
+/* ===== ../shared/claude/motion.css ===== */
+/* shared/claude/motion.css — purposeful motion, disabled when reduced. */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 480ms ease,
+    transform 480ms ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.card,
+.button,
+button {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== ../shared/claude/print.css ===== */
+/* shared/claude/print.css — clean print/PDF output for document views. */
+@media print {
+  .site-header,
+  .site-footer,
+  .nav-toggle,
+  .theme-toggle,
+  .hero-actions,
+  .actions,
+  .no-print {
+    display: none !important;
+  }
+  :root {
+    --paper: #ffffff;
+    --surface: #ffffff;
+    --ink: #000000;
+    --ink-muted: #333333;
+    --line: #999999;
+  }
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-size: 12pt;
+  }
+  .card,
+  .panel,
+  .preview {
+    border: 1px solid #999999;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  a::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    color: #555555;
+  }
+}
+
+/* ===== styles.css ===== */
 /* Legal templates: form + serif document preview. */
 #tool.grid {
   display: grid;
