@@ -99,6 +99,7 @@
           <button id="copyTemplate" type="button">Copy</button>
           <button id="downloadTemplate" type="button" class="secondary">Download .txt</button>
           <button id="downloadMarkdown" type="button" class="secondary">Download .md</button>
+          <button id="printTemplate" type="button" class="secondary">Save as PDF / Print</button>
           <button id="favouriteTemplate" type="button" class="secondary">Save favourite</button>
         </div>
 
@@ -113,6 +114,12 @@
             <button id="downloadBundleMarkdown" type="button" class="secondary">Download pack .md</button>
             <button id="downloadBundleText" type="button" class="secondary">Download pack .txt</button>
           </div>
+          <div class="collection-row">
+            <label for="collectionName">Collection name</label>
+            <input id="collectionName" name="collectionName" placeholder="My housing case" />
+            <button id="addToCollection" type="button" class="secondary">Add current to collection</button>
+          </div>
+          <div id="collections" class="collections" aria-live="polite" aria-label="Saved collections"></div>
         </fieldset>
 
         <p id="status" role="status" aria-live="polite"></p>

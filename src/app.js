@@ -1,5 +1,11 @@
 import { initTheme } from './theme.js';
 import {
+  addToCollection,
+  parseCollections,
+  serializeCollections,
+  COLLECTIONS_KEY
+} from '../../shared/collections/index.mjs';
+import {
   buildTemplateBundle,
   buildTemplateCasePack,
   buildTemplateBundleMetadata,
@@ -306,6 +312,64 @@ renderCurrentGuidance();
 update();
 
 initTheme('#theme-toggle');
+
+const collectionNameInput = document.querySelector('#collectionName');
+const addToCollectionBtn = document.querySelector('#addToCollection');
+const collectionsMount = document.querySelector('#collections');
+
+function loadCollections() {
+  try {
+    return parseCollections(localStorage.getItem(COLLECTIONS_KEY));
+  } catch {
+    return {};
+  }
+}
+
+function saveCollections(state) {
+  try {
+    localStorage.setItem(COLLECTIONS_KEY, serializeCollections(state));
+  } catch {
+    /* private mode */
+  }
+}
+
+function renderCollections() {
+  if (!collectionsMount) return;
+  const state = loadCollections();
+  const names = Object.keys(state);
+  if (!names.length) {
+    collectionsMount.replaceChildren();
+    return;
+  }
+  collectionsMount.replaceChildren(
+    ...names.map((name) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      const h3 = document.createElement('h3');
+      h3.textContent = name;
+      const p = document.createElement('p');
+      p.textContent = `${state[name].length} template(s): ${state[name].join(', ')}`;
+      card.append(h3, p);
+      return card;
+    })
+  );
+}
+
+addToCollectionBtn?.addEventListener('click', () => {
+  const name = collectionNameInput?.value?.trim();
+  const id = values().template;
+  if (!name || !id) {
+    status.textContent = 'Enter a collection name and choose a template first.';
+    return;
+  }
+  saveCollections(addToCollection(loadCollections(), name, id));
+  renderCollections();
+  status.textContent = `Added "${id}" to collection "${name}" locally.`;
+});
+
+renderCollections();
+
+document.querySelector('#printTemplate')?.addEventListener('click', () => window.print());
 
 const navToggle = document.querySelector('.nav-toggle');
 const primaryNav = document.querySelector('#primary-nav');
